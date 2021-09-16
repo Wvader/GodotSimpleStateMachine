@@ -1,70 +1,86 @@
 
 using Godot;
 
-public class Character : KinematicBody2D
+namespace StateMachineDemo
 {
-
-
-    [Export] public float Speed = 100;
-    
-    [Export] public float MaxSlopeAngle = 90;
-
-    private PlayerInput _input;
-    
-    private StateMachine<CharacterStates.Movement> _playerState;
-    
-    protected Vector2 _motion = Vector2.Zero;
-
-    private Vector2 _linearVelocity = Vector2.Zero;
-    
-    public override void _Ready()
+    public class Character : KinematicBody2D
     {
-        _playerState = new StateMachine<CharacterStates.Movement>(this);
-        _input = this.GetNodeInParent<PlayerInput>();
-    }
-
-    protected virtual void AddInput()
-    {
-        _motion = _input.Player1Movement;
-        _motion = _motion * Speed;
-    }
     
-    
-    protected virtual void EveryFrame()
-    {
-        
-        GDebug.Print("Movement: " + _playerState.CurrentState);
+        [Export] public float Speed = 100;
 
-        HandleMovement();
-        
-        AddInput();
-    }
+        private Sprite _sprite;
     
-    private void MoveController()
-    {
-        _linearVelocity = MoveAndSlide(_motion, Vector2.Zero,  true, 4, Mathf.Deg2Rad(MaxSlopeAngle));
-    }
-
-    protected virtual void HandleMovement()
-    {
-        if (_linearVelocity.Length() <= 0)
+        private PlayerInput _input;
+    
+        private StateMachine<CharacterStates.Movement> _movementState;
+    
+        private Vector2 _motion = Vector2.Zero;
+        private Vector2 _linearVelocity = Vector2.Zero;
+    
+        public override void _Ready()
         {
-            _playerState.ChangeState(CharacterStates.Movement.Idle);
+            _sprite = this.GetNodeInChildren<Sprite>();
+            _movementState = new StateMachine<CharacterStates.Movement>(this);
+            _input = this.GetNodeInParent<PlayerInput>();
         }
-        else
+
+        protected virtual void AddInput()
         {
-            _playerState.ChangeState(CharacterStates.Movement.Walking);
-
+            _motion = _input.Player1Movement;
+            _motion = _motion * Speed;
         }
-    }
+    
+    
+        protected virtual void EveryFrame()
+        {
+        
+            GDebug.Print("Movement: " + _movementState.CurrentState);
 
-    public override void _Process(float delta)
-    {
-       EveryFrame();
-    }
+            ChangeColor();
+        
+            HandleMovement();
+            AddInput();
+        }
 
-    public override void _PhysicsProcess(float delta)
-    {
-        MoveController();
+        private void ChangeColor()
+        {
+            if (_movementState.CurrentState == CharacterStates.Movement.Idle)
+            {
+                _sprite.Modulate = Colors.DarkBlue;
+            }
+        
+            if (_movementState.CurrentState == CharacterStates.Movement.Walking)
+            {
+                _sprite.Modulate = Colors.DarkGreen;
+            }
+        }
+    
+        private void MoveController()
+        {
+            _linearVelocity = MoveAndSlide(_motion);
+        }
+
+        protected virtual void HandleMovement()
+        {
+            if (_linearVelocity.Length() <= 0)
+            {
+                _movementState.ChangeState(CharacterStates.Movement.Idle);
+            }
+            else
+            {
+                _movementState.ChangeState(CharacterStates.Movement.Walking);
+
+            }
+        }
+
+        public override void _Process(float delta)
+        {
+            EveryFrame();
+        }
+
+        public override void _PhysicsProcess(float delta)
+        {
+            MoveController();
+        }
     }
 }

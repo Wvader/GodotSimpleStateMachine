@@ -1,8 +1,11 @@
-﻿public class CharacterStates
+﻿namespace StateMachineDemo
 {
-    public enum Movement
+    public class CharacterStates
     {
-        Idle,
-        Walking
+        public enum Movement
+        {
+            Idle,
+            Walking
+        }
     }
 }

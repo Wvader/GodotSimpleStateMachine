@@ -1,34 +1,37 @@
 using System;
 using Godot;
 
-public interface IStateMachine
+namespace StateMachineDemo
 {
-}
-
-public class StateMachine<T> : IStateMachine where T : struct, IComparable, IConvertible, IFormattable
-{
-    public Node Target;
-
-    public StateMachine(Node target)
+    public interface IStateMachine
     {
-        Target = target;
     }
 
-    public T CurrentState { get; set; }
-    public T PreviousState { get; set; }
-
-
-    public virtual void ChangeState(T newState)
+    public sealed class StateMachine<T> : IStateMachine where T : struct, IComparable, IConvertible, IFormattable
     {
-        if (!newState.Equals(CurrentState))
+        public Node Target;
+
+        public StateMachine(Node target)
         {
-            PreviousState = CurrentState;
-            CurrentState = newState;
+            Target = target;
         }
-    }
 
-    public virtual void RestorePreviousState()
-    {
-        CurrentState = PreviousState;
+        public T CurrentState { get; set; }
+        public T PreviousState { get; set; }
+
+
+        public void ChangeState(T newState)
+        {
+            if (!newState.Equals(CurrentState))
+            {
+                PreviousState = CurrentState;
+                CurrentState = newState;
+            }
+        }
+
+        public void RestorePreviousState()
+        {
+            CurrentState = PreviousState;
+        }
     }
 }

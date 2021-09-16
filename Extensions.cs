@@ -1,5 +1,7 @@
 ﻿using Godot;
 
+namespace StateMachineDemo
+{
     public static class Extensions
     {
         public static T GetNodeInParent<T>(this Node node) where T : Node
@@ -39,3 +41,4 @@
             return null;
         }
     }
+}

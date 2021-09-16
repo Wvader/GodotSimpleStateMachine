@@ -1,27 +1,29 @@
 using Godot;
-using System;
 
-public class GDebug : Node
+namespace StateMachineDemo
 {
+    public class GDebug : Node
+    {
 
-    public Label _label;
+        private Label _label;
 
-    public static GDebug Instance;
+        private static GDebug _instance;
     
-    public override void _Ready()
-    {
-        Instance = this;
-        _label = this.GetNodeInChildren<Label>();
-    }
+        public override void _Ready()
+        {
+            _instance = this;
+            _label = this.GetNodeInChildren<Label>();
+        }
 
-    public void SetLabelText(string text)
-    {
-        _label.Text = text;
-    }
+        private void SetLabelText(string text)
+        {
+            _label.Text = text;
+        }
     
-    public static void Print(string text)
-    {
-        Instance.SetLabelText(text);
-    }
+        public static void Print(string text)
+        {
+            _instance.SetLabelText(text);
+        }
 
+    }
 }
