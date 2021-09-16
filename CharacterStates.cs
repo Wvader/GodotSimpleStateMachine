@@ -1,13 +1,8 @@
-﻿using System;
-
-namespace Bigmonte.Tools
+﻿public class CharacterStates
 {
-    public class CharacterStates 
+    public enum Movement
     {
-        public enum Movement
-        {
-            Idle,
-            Walking
-        }
+        Idle,
+        Walking
     }
 }

@@ -1,7 +1,5 @@
 
-using Bigmonte.Tools;
 using Godot;
-
 
 public class Character : KinematicBody2D
 {
@@ -34,11 +32,12 @@ public class Character : KinematicBody2D
     
     protected virtual void EveryFrame()
     {
+        
+        GDebug.Print("Movement: " + _playerState.CurrentState);
+
         HandleMovement();
         
         AddInput();
-        
-        GDebug.Print("Movement: " + _playerState.CurrentState);
     }
     
     private void MoveController()
